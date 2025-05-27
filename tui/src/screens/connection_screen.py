@@ -62,8 +62,7 @@ class ConnectionScreen(Screen):
             return
 
         api_client.api_url = url
-        self.notify("Login screen is required...", severity="warning")
-        # TODO - Request login screen
+        await api_client.request_login(label="API Login")
 
     async def show_error_modal(self, message: str) -> None:
         await self.app.push_screen(ErrorModal("Connection Error", message))

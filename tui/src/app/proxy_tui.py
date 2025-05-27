@@ -11,3 +11,6 @@ class ProxyTUI(App):
         self.install_screen(ConnectionScreen(), name="connection_screen")
 
         api_client.request_connection()
+
+    def on_successful_login(self) -> None:
+        self.notify("Navigate to main screen...")
