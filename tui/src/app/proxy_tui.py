@@ -1,12 +1,13 @@
-from textual.app import App, ComposeResult
-from textual.widgets import Label
+from textual.app import App
 
 from src.globals import api_client
+from src.screens.connection_screen import ConnectionScreen
 
 
 class ProxyTUI(App):
-    def compose(self) -> ComposeResult:
-        yield Label("PROXY CLIENT TUI")
-
     def on_mount(self):
         api_client.app = self
+
+        self.install_screen(ConnectionScreen(), name="connection_screen")
+
+        api_client.request_connection()
