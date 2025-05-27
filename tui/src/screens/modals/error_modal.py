@@ -6,6 +6,8 @@ from textual.widgets import Button, Label
 
 
 class ErrorModal(ModalScreen[None]):
+    CSS_PATH = "./modals_styles.css"
+
     def __init__(self, title: str, message: str, subtitle: str | None = None):
         self.__message: str = message
         self.__title: str = title

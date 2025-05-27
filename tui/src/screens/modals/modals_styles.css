@@ -1,0 +1,31 @@
+ErrorModal {
+  align: center middle;
+}
+
+ErrorModal>Vertical {
+  background: $panel;
+  height: auto;
+  max_width: 60%;
+  border: double $accent;
+  border-title-align: center;
+  align: center middle
+}
+
+ErrorModal>Vertical>#label {
+  height: auto;
+  margin: 1;
+  align: center middle
+}
+
+ErrorModal>Vertical>Container>Label {
+  text-align: center;
+  text-overflow: fold;
+  width: 100%;
+}
+
+ErrorModal>Vertical>#button_container {
+  height: auto;
+
+  margin: 1;
+  align: center middle;
+}
