@@ -134,3 +134,6 @@ class APIClient:
 
         except self.APIClientException as e:
             return self.Response(False, {"error": str(e)})
+
+    def request_connection(self) -> None:
+        self.__app.push_screen("connection_screen")
