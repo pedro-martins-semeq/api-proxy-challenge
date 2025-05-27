@@ -2,6 +2,8 @@ import httpx
 from dataclasses import dataclass
 from typing import Optional, TYPE_CHECKING
 
+from src.api_client.schema import LoginRequest, RefreshTokenRequest, VerifyTokenRequest
+
 if TYPE_CHECKING:
     from src.app.proxy_tui import ProxyTUI
 
@@ -88,3 +90,47 @@ class APIClient:
                     "detail": e.response.text,
                 },
             )
+
+    async def _verify_token(self, token: str) -> Response:
+        response: APIClient.Response = await self._http_proxy(
+            method="POST",
+            url=f"{self.api_url}/auth/token/verify",
+            json=VerifyTokenRequest(token=token).model_dump(),
+        )
+
+        return response
+
+    async def _refresh_new_access_token(self, refresh_token) -> Response:
+        response: APIClient.Response = await self._http_proxy(
+            method="POST",
+            url=f"{self.api_url}/auth/token/refresh",
+            json=RefreshTokenRequest(refresh=refresh_token).model_dump(),
+        )
+
+        return response
+
+    async def validate_credentials(
+        self, password: str, username: Optional[str] = None
+    ) -> Response:
+        if username is not None:
+            self._username = username
+
+        payload = LoginRequest(username=self._username, password=password)
+
+        try:
+            response = await self._http_proxy(
+                method="POST",
+                url=f"{self._api_url}/auth/login",
+                json=payload.model_dump(),
+            )
+
+            if not response.state:
+                self._username = ""
+                return self.Response(False, response.body)
+
+            self.access_token = response.body["access"]
+            self.refresh_token = response.body["refresh"]
+            return self.Response(True, {})
+
+        except self.APIClientException as e:
+            return self.Response(False, {"error": str(e)})
