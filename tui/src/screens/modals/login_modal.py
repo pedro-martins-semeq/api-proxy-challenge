@@ -9,6 +9,8 @@ from src.screens.modals.error_modal import ErrorModal
 
 
 class LoginModal(ModalScreen[None]):
+    CSS_PATH = "./modals_styles.css"
+
     def __init__(self, label: Optional[str] = None, username: Optional[str] = None):
         self.__default_username: str = "" if username is None else username
         self.__label = label
