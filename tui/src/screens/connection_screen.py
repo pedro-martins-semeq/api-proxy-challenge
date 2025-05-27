@@ -6,6 +6,7 @@ from textual.containers import Horizontal, Vertical, Container
 import httpx
 
 from src.utils import is_valid_url
+from src.screens.modals.error_modal import ErrorModal
 
 
 class ConnectionScreen(Screen):
@@ -55,13 +56,12 @@ class ConnectionScreen(Screen):
                 await client.get(f"{url}/")
 
         except (httpx.ConnectError, httpx.HTTPError):
-            await self.show_error("Could not reach the API with the given url.")
+            await self.show_error_modal("Could not reach the API with the given url.")
             return
 
         api_client.api_url = url
         self.notify("Login screen is required...", severity="warning")
         # TODO - Request login screen
 
-    async def show_error(self, message: str) -> None:
-        self.notify(message, title="Error", severity="error")
-        # TODO - An error modal would be good
+    async def show_error_modal(self, message: str) -> None:
+        await self.app.push_screen(ErrorModal("Connection Error", message))
