@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import Optional, TYPE_CHECKING
 
 from src.api_client.schema import LoginRequest, RefreshTokenRequest, VerifyTokenRequest
+from src.screens.modals.login_modal import LoginModal
 
 if TYPE_CHECKING:
     from src.app.proxy_tui import ProxyTUI
@@ -137,3 +138,11 @@ class APIClient:
 
     def request_connection(self) -> None:
         self.__app.push_screen("connection_screen")
+
+    async def request_login(
+        self, label: Optional[str] = None, username: Optional[str] = None
+    ) -> None:
+        self.__app.install_screen(
+            LoginModal(label=label, username=username), name="login_modal"
+        )
+        await self.__app.push_screen("login_modal")
