@@ -10,6 +10,8 @@ from src.screens.modals.error_modal import ErrorModal
 
 
 class ConnectionScreen(Screen):
+    CSS_PATH = "./screens_styles.css"
+
     def compose(self) -> ComposeResult:
         yield Header()
 

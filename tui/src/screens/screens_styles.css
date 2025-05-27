@@ -1,0 +1,35 @@
+ConnectionScreen {
+    align: center middle;
+}
+
+ConnectionScreen>Vertical {
+    background: $panel;
+    padding: 1 2;
+    height: auto;
+    max_width: 60vw;
+    align: center middle;
+    border: double $accent;
+    border-title-align: center
+}
+
+ConnectionScreen>Vertical>#label {
+    height: auto;
+    width: 100%;
+    align: center middle;
+}
+
+ConnectionScreen>Vertical>#label>Label {
+    text-style: bold
+}
+
+ConnectionScreen>Vertical>#url_input {
+    height: auto;
+    width: 100%;
+    margin: 1 0;
+    align: center middle
+}
+
+ConnectionScreen>Vertical>#button_container {
+    height: auto;
+    align: center middle;
+}
