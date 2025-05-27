@@ -19,4 +19,4 @@ def verify_token(data: VerifyTokenRequest):
 
 @router.post("/token/refresh")
 def refresh_token(data: RefreshTokenRequest):
-    return {"TokenRefresh": "Placeholder"}
+    return auth_service.refresh_token(data)
