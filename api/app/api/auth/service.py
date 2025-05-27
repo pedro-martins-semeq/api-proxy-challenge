@@ -17,3 +17,10 @@ class AuthService:
             url=f"{settings.external_api_url}/token/verify",
             json=token.model_dump(),
         )
+
+    def refresh_token(self, token: RefreshTokenRequest):
+        return handle_http_request(
+            method="POST",
+            url=f"{settings.external_api_url}/token/refresh",
+            json=token.model_dump(),
+        )
