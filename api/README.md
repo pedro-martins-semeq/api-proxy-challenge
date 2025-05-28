@@ -2,31 +2,62 @@
 
 This is the backend service of the application, built using **FastAPI**. It provides endpoints for authentication, token validation, site queries and static info for one of Semeq's internal staging apis.
 
+>#### The recommended way to build the project is to run `docker compose up --build` on the root folder
+
 ---
 
-## Running the API locally
-### 1. Clone the repository
+## If you want to run just the API backend separately:
+
+### Option 1. Run the API using the API-Only docker-compose
+To run only the API service, use its specific `docker-compose.api.yaml`:
+
+```bash
+cd ./api
+docker compose -f ./docker-compose.api.yaml up --build
+```
+
+---
+
+### Option 2. Run the API directly with Docker
+You can build and run the backend container manually without `docker-compose`:
+
+```bash
+# On the ./api directory:
+cd ./api
+
+# Build the API Docker image
+docker buildx build -t proxy-api .
+
+# Run the container
+docker run -p 8000:8000 proxy-api
+```
+
+---
+
+### Option 3. Run the API locally without docker
+Clone the repository
 ```bash
 git clone https://github.com/pedro-martins-semeq/api-proxy-challenge
 cd api-proxy-challenge/api
 ```
-### 2. Create and activate the virtual environment
-You may use the `setup.sh` file to create a venv in a `.venv/` folder, activate it and install the dependencies listed in the `requirements.txt` file:
-```bash
-source setup.sh
-``` 
+**After clonning the repo, you must create and activate the virtual environment:**
 
-#### OR
+>You can use the `setup.sh` file to create a venv in a `.venv/` folder, activate it and install the dependencies listed in the `requirements.txt` file:
+>```bash
+>source setup.sh
+>``` 
+>
+> ### **or**
+>
+>You can setup the environment manually with the following commands:
+>```bash
+>python3 -m venv .venv
+>source ./.venv/bin/activate
+>pip install -r requirements.txt
+>```
+> ---
 
-You may setup the environment manually with the following commands:
-
-```bash
-python3 -m venv .venv
-source ./.venv/bin/activate
-pip install -r requirements.txt
-```
-
-### 3. Start the API Server
+#### Start the API Server
 ```bash
 uvicorn app.main:app --reload
 ```
@@ -192,6 +223,6 @@ uvicorn app.main:app --reload
 ---
 
 ## Notes
-- This service uses `httpx` for HTTP requests ti external APIs.
+- This service uses `httpx` for HTTP requests to external APIs.
 - The routes depend on upstream services configured in environment variables
 - For more request formatting info: the `core/http_proxy.py` module provides the generic HTTP fowarding layer
