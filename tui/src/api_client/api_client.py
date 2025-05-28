@@ -1,9 +1,11 @@
 import httpx
+from time import time
 from dataclasses import dataclass
 from typing import Optional, TYPE_CHECKING
 
 from src.api_client.schema import LoginRequest, RefreshTokenRequest, VerifyTokenRequest
 from src.screens.modals.login_modal import LoginModal
+from src.utils import get_exp_from_token
 
 if TYPE_CHECKING:
     from src.app.proxy_tui import ProxyTUI
@@ -15,7 +17,9 @@ class APIClient:
         self._api_url: str = ""
         self._username: str = ""
         self._access_token: str = ""
+        self.__access_token_exp: int = 0
         self._refresh_token: str = ""
+        self.__refresh_token_exp: int = 0
 
     @property
     def api_url(self) -> str:
@@ -39,7 +43,12 @@ class APIClient:
 
     @access_token.setter
     def access_token(self, token: str) -> None:
+        self.__access_token_exp = get_exp_from_token(token)
         self._access_token = token
+
+    @property
+    def access_token_exp(self) -> int:
+        return self.__access_token_exp
 
     @property
     def refresh_token(self) -> str:
@@ -47,7 +56,12 @@ class APIClient:
 
     @refresh_token.setter
     def refresh_token(self, token: str) -> None:
+        self.__refresh_token_exp = get_exp_from_token(token)
         self._refresh_token = token
+
+    @property
+    def refresh_token_exp(self) -> int:
+        return self.__refresh_token_exp
 
     @dataclass(frozen=True)
     class Response:
@@ -146,3 +160,77 @@ class APIClient:
             LoginModal(label=label, username=username), name="login_modal"
         )
         await self.__app.push_screen("login_modal")
+
+    async def validate_token_request(self) -> bool:
+        timenow = time()
+        if self.access_token_exp > timenow:
+            access_verify_response: APIClient.Response = await self._verify_token(
+                self.access_token
+            )
+            is_valid_access_token: bool = access_verify_response.state
+            if is_valid_access_token:
+                return True
+
+        self.app.notify(
+            "Trying refresh token...",
+            severity="warning",
+            title="Expired Access Token",
+        )
+        if self.refresh_token_exp > timenow:
+            refresh_verify_response: APIClient.Response = await self._verify_token(
+                self.refresh_token
+            )
+            is_valid_refresh_token: bool = refresh_verify_response.state
+            if is_valid_refresh_token:
+                refresh_token_response: APIClient.Response = (
+                    await self._refresh_new_access_token(
+                        refresh_token=self.refresh_token
+                    )
+                )
+                is_token_refreshed = refresh_token_response.state
+                if is_token_refreshed:
+                    self.access_token = refresh_token_response.body["access"]
+                    self.app.notify(
+                        "Access token is refresh",
+                        severity="information",
+                        title="Access Token Refresh",
+                    )
+                    return True
+
+                self.app.notify(
+                    "Could not refresh access token",
+                    severity="warning",
+                    title="Login is required",
+                )
+                await self.request_login("Login Expired", self._username)
+                return False
+
+        self.app.notify(
+            "Login is required",
+            severity="warning",
+            title="Session Expired",
+        )
+        await self.request_login("Login Expired", self._username)
+        return False
+
+    async def usercorp_request(self) -> Response:
+        if await self.validate_token_request():
+            response = await self._http_proxy(
+                method="GET",
+                url=f"{self.api_url}/usercorp/",
+                headers={"Authorization": f"Bearer {self.access_token}"},
+            )
+            return response
+        else:
+            return self.Response(False, {"error": "Authentication failed"})
+
+    async def implantation_mobile_tree_request(self, site: int) -> Response:
+        if await self.validate_token_request():
+            response = await self._http_proxy(
+                method="GET",
+                url=f"{self.api_url}/implantation/mobile/tree?site={site}",
+                headers={"Authorization": f"Bearer {self.access_token}"},
+            )
+            return response
+        else:
+            return self.Response(False, {"error": "Authentication failed"})
