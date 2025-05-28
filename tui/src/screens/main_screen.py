@@ -14,6 +14,7 @@ from textual.screen import Screen
 from textual.widgets import Button, Footer, Header, Label, Link
 
 from src.api_client.api_client import APIClient
+from src.screens.modals.implantation_tree_modal import ImplantationTreeModal
 
 
 class UserInfoContainer(Vertical):
@@ -34,12 +35,14 @@ class UserInfoContainer(Vertical):
     def compose(self) -> ComposeResult:
         yield Horizontal(
             Vertical(
-                Label(f"User: {self._username}", markup=False, id="username_label"),
+                Label(f"User: {self._username}",
+                      markup=False, id="username_label"),
                 Label(f"id: {self._id}", markup=False, id="id_label"),
                 id="username_container",
             ),
             Vertical(
-                Label(f"{self._first_name} {self._last_name}", id="fullname_label"),
+                Label(f"{self._first_name} {self._last_name}",
+                      id="fullname_label"),
                 Link(f"{self._email}", id="email_label"),
                 id="user_identity_container",
             ),
@@ -82,7 +85,8 @@ class SiteWidget(Horizontal):
         yield Horizontal(
             Container(Label(f"Id: {self.site.get('id')}"), classes="corp_id"),
             HorizontalScroll(
-                Container(Label(f"{self.site.get('name')}"), classes="corp_name"),
+                Container(Label(f"{self.site.get('name')}"),
+                          classes="corp_name"),
             ),
             Container(
                 Label(f"Corp: {self.site.get('corporation')}"),
@@ -148,7 +152,8 @@ class MainScreen(Screen):
         self._corporation = response.body.get("corporation")
         self._sites = response.body.get("sites")
 
-        user_info_container = self.query_one("#user_info_container", HorizontalScroll)
+        user_info_container = self.query_one(
+            "#user_info_container", HorizontalScroll)
         user_info_container.mount(UserInfoContainer(self._user))
         user_info_container.mount(CorporationContainer(self._corporation))
 
@@ -170,4 +175,7 @@ class MainScreen(Screen):
                 timeout=3,
             )
         else:
-            self.notify("Navigate to implantation tree...", severity="warning")
+            self.app.install_screen(
+                ImplantationTreeModal(response.body), name="implantation_tree_modal"
+            )
+            self.app.push_screen("implantation_tree_modal")

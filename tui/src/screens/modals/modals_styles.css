@@ -105,3 +105,54 @@ LoginModal>Vertical>#login_container>#button_container>Button {
 LoginModal>Vertical>#login_container>#button_container>#exit_button {
   width: 5
 }
+
+ImplantationTreeModal {
+  align: center middle;
+}
+
+ImplantationTreeModal>#modal_container {
+  background: $panel;
+  width: auto;
+  height: 90%;
+  max_width: 80vw;
+  padding: 1 2;
+  border: double $accent;
+  border-title-align: center
+}
+
+ImplantationTreeModal>Vertical>#header_container {
+  align: center middle;
+  height: 10%
+}
+
+ImplantationTreeModal>Vertical>#header_container>#name_label {
+  background: $boost;
+  text-align: center;
+  text_wrap: wrap;
+  text-overflow: fold;
+  width: 1fr;
+  margin: 0 2
+}
+
+ImplantationTreeModal>Vertical>#buttons_container {
+  padding: 1 0 0 0;
+  height: auto;
+}
+
+ImplantationTreeModal>Vertical>#buttons_container>Horizontal {
+  align: center middle;
+  height: auto
+}
+
+
+ImplantationTreeModal>Vertical>#buttons_container>Horizontal>Label {
+  height: 3;
+  margin: 0 2;
+  padding: 1;
+}
+
+ImplantationTreeModal>Vertical>#buttons_container>#close_button_container {
+  height: auto;
+  padding: 1 0 0 0;
+  align: center middle
+}
