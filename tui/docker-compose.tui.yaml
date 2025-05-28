@@ -1,0 +1,5 @@
+services:
+  tui:
+    build:
+      context: ./
+    network_mode: host
