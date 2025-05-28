@@ -2,7 +2,7 @@
 
 This repository contains a dual-component system designed to interact with one of Semeq’s internal staging APIs. It offers:
 
-- **Backend**: A REST API built using **FastAPI**, responsible for authentication and data forwarding.
+- **Backend**: An HTTP API built using **FastAPI**, responsible for authentication and data forwarding.
 - **Frontend**: A terminal user interface (TUI) built using **Textual**, providing a user-friendly CLI for interacting with the backend.
 
 ---
@@ -40,6 +40,15 @@ Each module has its own setup instructions inside its respective folder.
 - **Python 3.11+**
 
 ---
+
+## Requirements
+**If you opt to run the application with docker:**
+- `Docker` (tested with v28.0+)
+  - Be sure to have **host networking** enable in your Docker Engine
+
+**Otherwise:**
+- `Python 3.11+`
+- `Git`
 
 ## Docker Setup and Usage
 
