@@ -212,3 +212,25 @@ class APIClient:
         )
         await self.request_login("Login Expired", self._username)
         return False
+
+    async def usercorp_request(self) -> Response:
+        if await self.validate_token_request():
+            response = await self._http_proxy(
+                method="GET",
+                url=f"{self.api_url}/usercorp/",
+                headers={"Authorization": f"Bearer {self.access_token}"},
+            )
+            return response
+        else:
+            return self.Response(False, {"error": "Authentication failed"})
+
+    async def implantation_mobile_tree_request(self, site: int) -> Response:
+        if await self.validate_token_request():
+            response = await self._http_proxy(
+                method="GET",
+                url=f"{self.api_url}/implantation/mobile/tree?site={site}",
+                headers={"Authorization": f"Bearer {self.access_token}"},
+            )
+            return response
+        else:
+            return self.Response(False, {"error": "Authentication failed"})
