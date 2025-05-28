@@ -1,0 +1,181 @@
+ConnectionScreen {
+    align: center middle;
+}
+
+ConnectionScreen>Vertical {
+    background: $panel;
+    padding: 1 2;
+    height: auto;
+    max_width: 60vw;
+    align: center middle;
+    border: double $accent;
+    border-title-align: center
+}
+
+ConnectionScreen>Vertical>#label {
+    height: auto;
+    width: 100%;
+    align: center middle;
+}
+
+ConnectionScreen>Vertical>#label>Label {
+    text-style: bold
+}
+
+ConnectionScreen>Vertical>#url_input {
+    height: auto;
+    width: 100%;
+    margin: 1 0;
+    align: center middle
+}
+
+ConnectionScreen>Vertical>#button_container {
+    height: auto;
+    align: center middle;
+}
+
+MainScreen {
+    background: $background;
+}
+
+MainScreen>#header_container {
+    height: 2fr;
+    min_height: 10;
+    max_height: 10;
+    align: center middle
+}
+
+MainScreen>#sites {
+    height: 5fr;
+    align: center middle
+}
+
+MainScreen>Container>#user_info_container {
+    background: $boost;
+    padding: 0;
+    margin: 1;
+    height: auto;
+    max_height: 9;
+    width: 80vw;
+    border: solid $accent
+}
+
+MainScreen>Container>#user_info_container>UserInfoContainer {
+    padding: 1 2;
+    margin: 1 0;
+    height: auto;
+    width: 3fr;
+    max_width: 70vw
+}
+
+MainScreen>Container#user_info_container>UserInfoContainer>#user_info_content {
+    height: auto;
+    width: auto
+}
+
+
+MainScreen>Container>#user_info_container>UserInfoContainer>#user_info_content>Vertical {
+    height: auto;
+    width: auto;
+    margin: 0 4;
+    align: left top
+}
+
+MainScreen>Container>#user_info_container>UserInfoContainer>#user_info_content>Vertical>Label,
+Link {
+    height: auto;
+    text-wrap: wrap;
+    text-overflow: fold;
+}
+
+MainScreen>Container>#user_info_container>CorporationContainer {
+    background: $panel;
+    margin: 0 2 0 0;
+    padding: 1 1;
+    min_height: 7;
+    width: auto;
+    border: double $accent
+}
+
+MainScreen>Container>#user_info_container>CorporationContainer>.corp_container {
+    height: 1;
+    width: 100%;
+    min_width: 30;
+    max_width: 100vw;
+    align: center middle
+}
+
+MainScreen>Container>#user_info_container>CorporationContainer>.corp_container>.corp_name {
+    background: $boost;
+    padding: 0 1;
+    height: auto;
+    width: 60%;
+    max_width: 60%;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    text-align: left
+}
+
+MainScreen>Container>#user_info_container>CorporationContainer>.corp_container>.corp_id {
+    background: $boost;
+    padding: 0 1 0 0;
+    height: auto;
+    width: 40%;
+    min_width: 9;
+    text-align: right
+}
+
+#sites_container {
+    background: $panel;
+    height: auto;
+    max_height: 60vh;
+    width: 80vw;
+    border: solid $accent;
+}
+
+#sites_container>Horizontal {
+    background: $background;
+    margin: 0 1 1 1;
+    width: 100%;
+    height: 4;
+}
+
+SiteWidget>Horizontal>Container {
+    width: auto;
+    height: 3;
+    align: right middle
+}
+
+SiteWidget>Horizontal>Container>Label {
+    width: auto;
+    padding: 0 1;
+    text-wrap: nowrap;
+    text-overflow: ellipsis
+}
+
+SiteWidget>Horizontal>.corp_id>Label {
+    color: $accent;
+    padding: 0 1;
+    width: 14
+}
+
+SiteWidget>Horizontal>HorizontalScroll {
+    background: $boost;
+    width: 1fr
+}
+
+SiteWidget>Horizontal>HorizontalScroll>Container {
+    padding: 0 2;
+    height: 3;
+    width: auto;
+    align: left middle
+}
+
+SiteWidget>Horizontal>HorizontalScroll>.corp_name {
+    width: auto
+}
+
+SiteWidget>Horizontal>.button_container>Button {
+    color: $accent;
+    width: 14
+}
