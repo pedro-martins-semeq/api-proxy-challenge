@@ -2,6 +2,8 @@
 
 This is the frontend client service of the application, built using **Textual**. 
 
+>#### The recommended way to build the project is to run `docker compose up --build` on the root folder
+
 ### The TUI Features:
 - **A simple to use terminal interface to connect with the backend:**
 
@@ -35,29 +37,61 @@ This is the frontend client service of the application, built using **Textual**.
 
 ---
 
-## Running the TUI locally
-### 1. Clone the repository
+# Running the TUI.
+
+## If you want to run just the TUI frontend separately
+
+### Option 1. Serve the TUI using the TUI-Only docker-compose
+To serve (web host) only the TUI service, use its specific `docker-compose.tui.yaml`:
+
+```bash
+cd ./tui
+docker compose -f ./docker-compose.tui.yaml up --build
+```
+
+---
+
+### Option 2. Serve the TUI directly with Docker
+You can build and run the TUI container manually without `docker-compose`:
+
+```bash
+# On the ./tui directory:
+cd ./tui
+
+# Build the TUI Docker image
+docker buildx build -t proxy-tui .
+
+# Run the container
+docker run -p 8000:8000 proxy-tui
+```
+
+---
+
+### Option 3. Run the TUI locally without docker
+Clone the repository
 ```bash
 git clone https://github.com/pedro-martins-semeq/api-proxy-challenge
 cd api-proxy-challenge/tui
 ```
-### 2. Create and activate the virtual environment
-You may use the `setup.sh` file to create a venv in a `.venv/` folder, activate it and install the dependencies listed in the `requirements.txt` file:
-```bash
-source setup.sh
-``` 
 
-#### OR
+**After clonning the repo, you must create and activate the virtual environment:**
 
-You may setup the environment manually with the following commands:
+>You can use the `setup.sh` file to create a venv in a `.venv/` folder, activate it and install the dependencies listed in the `requirements.txt` file:
+>```bash
+>source setup.sh
+>``` 
+>
+> ### **or**
+>
+>You can setup the environment manually with the following commands:
+>```bash
+>python3 -m venv .venv
+>source ./.venv/bin/activate
+>pip install -r requirements.txt
+>```
+> ---
 
-```bash
-python3 -m venv .venv
-source ./.venv/bin/activate
-pip install -r requirements.txt
-```
-
-### 3. Start the TUI Application
+#### Start the TUI Application
 You may start the application directly in your terminal window:
 ```bash
 textual run main.py
@@ -65,7 +99,7 @@ textual run main.py
 
 #### OR
 
-You may serve the application to access the interface in a web browser
+You can serve the application to access the interface in a web browser
 ```bash
 textual serve --host 127.0.0.1 -p 3000 main.py
 ```
@@ -81,5 +115,5 @@ textual serve --host 127.0.0.1 -p 3000 main.py
 ---
 
 ## Notes
-- This service uses `httpx` for HTTP requests ti external APIs.
+- This service uses `httpx` for HTTP requests to external APIs.
 - For more request formatting info: the `./src/api-client/api_client.py` module provides all the HTTP client app logic.
