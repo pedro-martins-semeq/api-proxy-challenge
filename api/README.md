@@ -6,7 +6,7 @@ This is the backend service of the application, built using **FastAPI**. It prov
 
 ---
 
-## If you want to run just the API backend separately:
+## If you want to run only the API backend separately:
 
 ### Option 1. Run the API using the API-Only docker-compose
 To run only the API service, use its specific `docker-compose.api.yaml`:
@@ -22,7 +22,6 @@ docker compose -f ./docker-compose.api.yaml up --build
 You can build and run the backend container manually without `docker-compose`:
 
 ```bash
-# On the ./api directory:
 cd ./api
 
 # Build the API Docker image
