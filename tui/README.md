@@ -62,7 +62,7 @@ cd ./tui
 docker buildx build -t proxy-tui .
 
 # Run the container
-docker run -p 8000:8000 proxy-tui
+docker run --name proxy-tui --network host proxy-tui
 ```
 
 ---
