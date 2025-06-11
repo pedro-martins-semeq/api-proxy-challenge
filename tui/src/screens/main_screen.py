@@ -12,6 +12,7 @@ from textual.containers import (
 from textual.message import Message
 from textual.screen import Screen
 from textual.widgets import Button, Footer, Header, Label, Link
+from textual.widget import Widget
 
 from src.api_client.api_client import APIClient
 from src.screens.modals.implantation_tree_modal import ImplantationTreeModal
@@ -71,8 +72,9 @@ class CorporationContainer(VerticalScroll):
 
 
 class GetTreeClicked(Message):
-    def __init__(self, site_id):
+    def __init__(self, sender: Widget, site_id):
         super().__init__()
+        self.sender: Widget = sender
         self.site_id: int = site_id
 
 
@@ -104,7 +106,7 @@ class SiteWidget(Horizontal):
 
     @on(Button.Pressed, ".get_tree_button")
     def get_tree_event(self) -> None:
-        self.post_message(GetTreeClicked(site_id=self.site.get("id")))
+        self.post_message(GetTreeClicked(self, site_id=self.site.get("id")))
 
 
 class SitesContainer(VerticalScroll):
@@ -129,8 +131,13 @@ class MainScreen(Screen):
         self._corporation = {}
         self._sites = [{}]
 
-    async def usercorp_data_request(self) -> APIClient.Response:
+    async def _usercorp_data_request(self) -> APIClient.Response:
         response = await self._api_client.usercorp_request()
+
+        return response
+
+    async def _implantation_mobile_tree_request(self, site_id: int) -> APIClient.Response:
+        response: APIClient.Response = await self._api_client.implantation_mobile_tree_request(site_id)
 
         return response
 
@@ -146,7 +153,7 @@ class MainScreen(Screen):
         yield Footer()
 
     async def on_mount(self) -> None:
-        response = await self._api_client.usercorp_request()
+        response = await self._usercorp_data_request()
 
         self._user = response.body.get("user")
         self._corporation = response.body.get("corporation")
@@ -162,10 +169,19 @@ class MainScreen(Screen):
             for site in self._sites:
                 await sites_container.mount(SiteWidget(site))
 
-    async def on_get_tree_clicked(self, message: GetTreeClicked) -> None:
+    def on_get_tree_clicked(self, message: GetTreeClicked) -> None:
         site_id = message.site_id
 
-        response = await self._api_client.implantation_mobile_tree_request(site_id)
+        clicked_button: Button = message.sender.query_one(".get_tree_button", Button)
+        clicked_button.loading = True
+
+        for button in self.query(".get_tree_button").results(Button):
+            button.disabled = True
+
+        self.run_worker(self._get_tree_request(site_id, clicked_button), exclusive=True)
+
+    async def _get_tree_request(self, site_id: int, loading_container: Widget):
+        response = await self._implantation_mobile_tree_request(site_id)
 
         if not response.state:
             self.notify(
@@ -179,3 +195,8 @@ class MainScreen(Screen):
                 ImplantationTreeModal(response.body), name="implantation_tree_modal"
             )
             self.app.push_screen("implantation_tree_modal")
+
+        for button in self.query(".get_tree_button").results(Button):
+            button.disabled = False
+        loading_container.loading = False
+
