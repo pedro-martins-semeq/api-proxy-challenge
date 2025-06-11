@@ -1,9 +1,12 @@
+import time
+
 from typing import Optional
 from textual import on
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
 from textual.screen import ModalScreen
 from textual.widgets import Button, Label, Input
+from textual.widget import Widget
 
 from src.screens.modals.error_modal import ErrorModal
 
@@ -58,14 +61,22 @@ class LoginModal(ModalScreen[None]):
 
     @on(Button.Pressed, "#login_button")
     @on(Input.Submitted, "#password_input")
-    async def login(self):
-        from src.globals import api_client
-
+    def login(self) -> None:
         username_input: Input = self.query_one("#username_input", Input)
         password_input: Input = self.query_one("#password_input", Input)
 
         username = username_input.value.strip()
         password = password_input.value.strip()
+
+
+        button_container = self.query_one("#button_container", Horizontal)
+
+        self.run_worker(self._login_request(username, password, button_container), group="auth", exclusive=True)
+
+
+
+    async def _login_request(self, username: str, password: str, loading_container: Widget) -> None:
+        from src.globals import api_client
 
         if not username or not password:
             self.notify(
@@ -75,11 +86,13 @@ class LoginModal(ModalScreen[None]):
             )
             return
 
+        loading_container.loading = True
         result = await api_client.validate_credentials(password, username)
+        loading_container.loading = False
+
 
         if not result.state:
             await self.show_error_modal("Incorrect username or password.")
-
         else:
             self.dismiss()
             self.app.uninstall_screen("login_modal")
